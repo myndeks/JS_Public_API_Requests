@@ -27,10 +27,9 @@ fetch('https://randomuser.me/api/?results=12')
 /*---------------------------------------
     Add EVENT Listener for Modal
 ---------------------------------------*/
-  window.addEventListener('click', (e) => {
+  gallery.addEventListener('click', (e) => {
 
-    const card = document.querySelectorAll('.card');
-    const modalContainer = document.querySelectorAll('.modal-container');
+    const modalContainer = document.querySelector('.modal-container').style.display = 'block';
 
 
   })
