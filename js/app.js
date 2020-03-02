@@ -21,49 +21,34 @@ fetch('https://randomuser.me/api/?results=12')
 
     generateHTML(userArray);
     displayModalWindow(userArray);
+    addEventListenre();
   })
 
+  /*---------------------------------------
+      Add EVENT Listener for Modal
+  ---------------------------------------*/
 
-/*---------------------------------------
-    Add EVENT Listener for Modal
----------------------------------------*/
 
-  gallery.addEventListener('click', (e) => {
-
-    // Geting all cards
+  function addEventListenre() {
     const cards = document.querySelectorAll('div.card');
-    // Converting to an Array
-    const newCards = [];
-    newCards.push(cards);
-    // console.log(newCards);
+    let cardsArray = [];
+    cardsArray.push(cards);
 
-    // Getting all modals
-    const modalContainer = document.querySelectorAll('div.modal-container');
-    // Converting to an Array
-    const newmodalContainer = [];
-    newmodalContainer.push(modalContainer);
+    let modals = document.querySelectorAll('div.modal-container');
 
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].addEventListener('click', (e) => {
 
-    // Find Index of pressed cards
-    const indexOfCards = Array.prototype.indexOf.call(cards, e.target);
-    console.log(indexOfCards);
+        if (e.target.className === 'card') {
+          const indexOfCards = Array.prototype.indexOf.call(cards, e.target);
+          console.log(indexOfCards);
 
-    // Find Index of pressed card modal
-    const indexOfModals = Array.prototype.indexOf.call(modalContainer, e.target);
-    console.log(indexOfCards);
+        }
 
-    // console.log(modalContainer.length);
-
-    // If index match modalContainer style display = '';
-    for (var i = 0; i < modalContainer.length; i++) {
-      if (indexOfCards[i] === indexOfModals[i]) {
-        modalContainer[i].style.display = '';
-      }
+      })
     }
 
-
-  })
-
+  }
 
   /*---------------------------------------
                 GenerateHTML
