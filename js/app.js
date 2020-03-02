@@ -29,32 +29,36 @@ fetch('https://randomuser.me/api/?results=12')
 ---------------------------------------*/
 
   gallery.addEventListener('click', (e) => {
+
+    // Geting all cards
     const cards = document.querySelectorAll('div.card');
+    // Converting to an Array
     const newCards = [];
     newCards.push(cards);
     // console.log(newCards);
 
+    // Getting all modals
     const modalContainer = document.querySelectorAll('div.modal-container');
+    // Converting to an Array
     const newmodalContainer = [];
     newmodalContainer.push(modalContainer);
 
 
-
+    // Find Index of pressed cards
     const indexOfCards = Array.prototype.indexOf.call(cards, e.target);
     console.log(indexOfCards);
 
+    // Find Index of pressed card modal
     const indexOfModals = Array.prototype.indexOf.call(modalContainer, e.target);
     console.log(indexOfCards);
 
-    console.log(modalContainer.length);
+    // console.log(modalContainer.length);
 
-// find matching index
+    // If index match modalContainer style display = '';
     for (var i = 0; i < modalContainer.length; i++) {
-
       if (indexOfCards[i] === indexOfModals[i]) {
         modalContainer[i].style.display = '';
       }
-
     }
 
 
