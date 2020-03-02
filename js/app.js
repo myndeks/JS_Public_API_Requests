@@ -27,9 +27,35 @@ fetch('https://randomuser.me/api/?results=12')
 /*---------------------------------------
     Add EVENT Listener for Modal
 ---------------------------------------*/
-  gallery.addEventListener('click', (e) => {
 
-    const modalContainer = document.querySelector('.modal-container').style.display = 'block';
+  gallery.addEventListener('click', (e) => {
+    const cards = document.querySelectorAll('div.card');
+    const newCards = [];
+    newCards.push(cards);
+    // console.log(newCards);
+
+    const modalContainer = document.querySelectorAll('div.modal-container');
+    const newmodalContainer = [];
+    newmodalContainer.push(modalContainer);
+
+
+
+    const indexOfCards = Array.prototype.indexOf.call(cards, e.target);
+    console.log(indexOfCards);
+
+    const indexOfModals = Array.prototype.indexOf.call(modalContainer, e.target);
+    console.log(indexOfCards);
+
+    console.log(modalContainer.length);
+
+// find matching index
+    for (var i = 0; i < modalContainer.length; i++) {
+
+      if (indexOfCards[i] === indexOfModals[i]) {
+        modalContainer[i].style.display = '';
+      }
+
+    }
 
 
   })
