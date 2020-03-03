@@ -1,16 +1,13 @@
 /*---------------------------------------
                 DOM
 ---------------------------------------*/
-
 const gallery = document.getElementById('gallery');
 const body = document.querySelector('body');
+
 
 /*---------------------------------------
                 Fetch data
 ---------------------------------------*/
-
-
-
 fetch('https://randomuser.me/api/?results=12')
   .then((response) => {
     return response.json();
@@ -24,36 +21,42 @@ fetch('https://randomuser.me/api/?results=12')
     addEventListenre();
   })
 
+
   /*---------------------------------------
       Add EVENT Listener for Modal
   ---------------------------------------*/
-
-
   function addEventListenre() {
+    // DOM
     const cards = document.querySelectorAll('div.card');
-    let cardsArray = [];
-    cardsArray.push(cards);
+    const modal = document.querySelectorAll('div.modal-container');
 
-    let modals = document.querySelectorAll('div.modal-container');
-
+    // Loop thew cards
     for (var i = 0; i < cards.length; i++) {
       cards[i].addEventListener('click', (e) => {
+        const index = Array.prototype.indexOf.call(cards, e.target);
+        console.log(index);
 
-        if (e.target.className === 'card') {
-          const indexOfCards = Array.prototype.indexOf.call(cards, e.target);
-          console.log(indexOfCards);
+        modal[index].style.display = '';
 
+        const modalBtn = document.querySelectorAll('modal-container');
+        for (var j = 0; j < modal.length; j++) {
+          modal[j].addEventListener('click', (e) => {
+            if (e.target.className === 'modal-close-btn') {
+              modal[index].style.display = 'none';
+            }
+          })
         }
-
       })
     }
+
+
+
 
   }
 
   /*---------------------------------------
                 GenerateHTML
   ---------------------------------------*/
-
 function generateHTML (data) {
 
   const employee = data.map(
