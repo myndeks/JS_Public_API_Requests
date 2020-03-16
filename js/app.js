@@ -28,7 +28,8 @@ fetchData('https://randomuser.me/api/?results=12&nat=us')
     displayModalWindow(userArray);
     addEventListenre();
     searchBar();
-    SearchBarEventListener ();
+    SearchBarEventListenerClick();
+    SearchBarEventListenerKeyUp();
   })
 
   /*---------------------------------------
@@ -90,10 +91,8 @@ function checkStatus(response) {
     // Close modal when close button is clicked
     for (var j = 0; j < modal.length; j++) {
       modal[j].addEventListener('click', (e) => {
-        if (e.target.className === 'modal-close-btn') {
+        if (e.target.className === 'modal-close-btn' || e.target.tagName === 'STRONG') {
           let indexofClose = Array.prototype.indexOf.call(modal, e.currentTarget);
-          console.log(indexofClose);
-
           modal[indexofClose].style.display = 'none';
         }  
       })
@@ -119,36 +118,20 @@ function generateHTML (data) {
   const employee = data.map(
     data => {
       const card = document.createElement('div');
-      card.classList.add('card')
+      card.innerHTML = 
+      `
+      <div class="card">
+        <div class="card-img-container">
+            <img class="card-img" src="${data.picture.medium}" alt="profile picture">
+        </div>
+        <div class="card-info-container">
+          <h3 id="name" class="card-name cap">${data.name.first} ${data.name.last}</h3>
+          <p class="card-text">${data.email}</p>
+          <p class="card-text cap">${data.location.city} ${data.location.state}</p>
+        </div>
+      </div>
+      `;
       gallery.appendChild(card);
-
-      const cardImgContainer = document.createElement('div');
-      cardImgContainer.classList.add('card-img-container');
-      card.appendChild(cardImgContainer);
-
-      const imageDiv = document.createElement('img');
-      imageDiv.classList.add('card-img');
-      imageDiv.src = data.picture.medium;
-      cardImgContainer.appendChild(imageDiv);
-
-      const cardINfoContainer = document.createElement('div');
-      cardINfoContainer.classList.add('card-info-container');
-      card.appendChild(cardINfoContainer);
-
-      const nameDiv = document.createElement('h3');
-      nameDiv.classList.add('card-name');
-      nameDiv.textContent = data.name.first + data.name.last;
-      cardINfoContainer.appendChild(nameDiv);
-
-      const emailDiv = document.createElement('p');
-      emailDiv.classList.add('card-text');
-      emailDiv.textContent = data.email;
-      cardINfoContainer.appendChild(emailDiv);
-
-      const cityStage = document.createElement('p');
-      cityStage.classList.add('card-text');
-      cityStage.textContent = data.location.city + data.location.state;
-      cardINfoContainer.appendChild(cityStage);
     }
   )
 }
@@ -166,98 +149,42 @@ function displayModalWindow(data) {
     body.appendChild(modalContainer)
 
     const modal = document.createElement('div');
-    modal.classList.add('modal');
+    modal.innerHTML = `
+      <div class="modal">
+      <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+      <div class="modal-info-container">
+          <img class="modal-img" src="${data.picture.medium}" alt="profile picture">
+          <h3 id="name" class="modal-name cap">${data.name.first}</h3>
+          <p class="modal-text">${data.email}</p>
+          <p class="modal-text cap">${data.location.city}</p>
+          <hr>
+          <p class="modal-text">${data.cell}</p>
+          <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.country}, OR ${data.location.postcode}</p>
+          <p class="modal-text">Birthday: ${regEx(data.dob.date)}</p>
+      </div>
+    `;
     modalContainer.appendChild(modal);
 
-    const button = document.createElement('button');
-    button.classList.add('modal-close-btn');
-    button.textContent = 'X';
-    modal.appendChild(button);
-
-    const modalInfoCotainer = document.createElement('div');
-    modalInfoCotainer.classList.add('modal-info-container');
-    modal.appendChild(modalInfoCotainer)
-
-    const modalImage = document.createElement('img');
-    modalImage.setAttribute("class", "modal-img");
-    modalImage.src = data.picture.medium;;
-    modalInfoCotainer.appendChild(modalImage);
-
-    const modalName = document.createElement('h3');
-    modalName.textContent = data.name.first;
-    modalName.classList.add('modal-name');
-    modalInfoCotainer.appendChild(modalName);
-
-    const modalEmail = document.createElement('p');
-    modalEmail.classList.add('modal-text');
-    modalEmail.textContent = data.email;
-    modalInfoCotainer.appendChild(modalEmail);
-
-    const modalCity = document.createElement('p');
-    modalCity.classList.add('modal-text');
-    modalCity.textContent = data.location.city;
-    modalInfoCotainer.appendChild(modalCity);
-
-    const hr = document.createElement('hr');
-    modalInfoCotainer.appendChild(hr);
-
-    const modalNumber = document.createElement('p');
-    modalNumber.classList.add('modal-text');
-    modalNumber.textContent = data.cell;
-    modalInfoCotainer.appendChild(modalNumber);
-
-    const modalAddress = document.createElement('p');
-    modalAddress.classList.add('modal-text');
-    modalAddress.textContent = data.location.state + ' ' + data.location.country + ' ' + data.location.postcode;
-    modalInfoCotainer.appendChild(modalAddress);
-
-    const modalBirthday = document.createElement('p');
-    modalBirthday.classList.add('modal-text');
-    modalBirthday.textContent = 'Birthday ' + regEx(data.dob.date);
-    modalInfoCotainer.appendChild(modalBirthday);
-
     // Modal Prev, Modal Next
-
     const modalBtnContainer = document.createElement('div');
     modalContainer.appendChild(modalBtnContainer);
-    
-    const modalPrev = document.createElement('button');
-    modalPrev.textContent = 'Prev';
-    modalPrev.classList.add('modal-prev');
-    modalPrev.classList.add('btn');
-    modalBtnContainer.appendChild(modalPrev);
 
-    const modalNext = document.createElement('button');
-    modalNext.textContent = 'Next';
-    modalNext.classList.add('modal-next');
-    modalNext.classList.add('btn');
-    modalBtnContainer.appendChild(modalNext);
-
+    const modalPrevNext = document.createElement('div');
+    modalPrevNext.innerHTML = `
+      <div class="modal-btn-container">
+        <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+        <button type="button" id="modal-next" class="modal-next btn">Next</button>
+      </div>
+      `;
+    modalBtnContainer.appendChild(modalPrevNext);
   })
-
 }
 
-    /*---------------------------------------
+  /*---------------------------------------
                 Search bar
   ---------------------------------------*/
 
   function searchBar() {
-
-    // const form = document.createElement('form');
-    // searchContainer.appendChild(form);
-    // const input = document.createElement('input');
-    // input.type = 'search';
-    // input.classList.add('search-input');
-    // input.setAttribute("id", "search-submit");
-    // input.placeholder = 'Search...';
-    // form.appendChild(input);
-    // const button = document.createElement('input');
-    // button.type = 'submit';
-    // button.innerHTML = '&#x1F50D;';
-    // button.classList.add('search-submit');
-    // button.setAttribute("id", "search-button");
-    // form.appendChild(button);
-
     const searchHTML = document.createElement('div');
 
     searchHTML.innerHTML = `
@@ -266,30 +193,67 @@ function displayModalWindow(data) {
       <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     </form>`;
     searchContainer.appendChild(searchHTML);
-  
   }
-  
-     /*---------------------------------------
-                Search function
+
+
+   /*---------------------------------------
+           Search filter
   ---------------------------------------*/
 
-  function SearchBarEventListener () {
-    const button = document.getElementById('search-submit');
+  function searchFilter (e) {
     const searchInput = document.querySelector('#search-input');
-    const searchInputText = searchInput.value;
-    const cards = document.querySelectorAll('div.card');
-
-    const h3 = document.querySelectorAll('h3');
-    
+    const cards = document.querySelectorAll('div.card');   
   
-    button.addEventListener('click', (e) => {
+    // No results FOund
+    const noResultsHTML = document.createElement('div');
+      noResultsHTML.classList.add('no-results');
+      noResultsHTML.innerHTML = 
+      `
+      <div class="res">
+        <h1> No Reults found of </h1>
+      </div>
+      `;
+      body.insertBefore(noResultsHTML, gallery);
+      noResultsHTML.style.display = 'none';
+
+    // Add Event Listener For search
       e.preventDefault();
-  
-      console.log(searchInputText);
+      const searchInputText = searchInput.value.toUpperCase();
 
-      // for (let i = 0; i < cards.length; i++) {
-                
-      // }
-      
+      for(let i =0; i < cards.length; i++){ 
+        let h3 = cards[i].getElementsByTagName('h3')[0];
+        let  txtValue = h3.textContent;
+        if (txtValue.toUpperCase().indexOf(searchInputText) > -1){
+          cards[i].style.display = '';
+          noResultsHTML.style.display = 'none';
+        } else {
+          cards[i].style.display = 'none'; 
+          noResultsHTML.style.display = '';
+        }
+      }
+  }
+
+  
+
+ /*---------------------------------------
+           Search function On Click
+  ---------------------------------------*/
+
+  function SearchBarEventListenerClick () {
+    const button = document.getElementById('search-submit');
+    button.addEventListener('click', (e) => {
+      searchFilter(e);
+    });
+  }
+
+
+ /*---------------------------------------
+        Search function On KeyUp
+  ---------------------------------------*/
+
+  function SearchBarEventListenerKeyUp () {
+    const searchInput = document.querySelector('#search-input');
+    searchInput.addEventListener('keyup', (e) => {
+      searchFilter(e);
     });
   }
