@@ -280,15 +280,16 @@ function displayModalWindow(data) {
     const cards = document.querySelectorAll('div.card');
 
     const h3 = document.querySelectorAll('h3');
+    
   
     button.addEventListener('click', (e) => {
       e.preventDefault();
   
       console.log(searchInputText);
 
-      for (let i = 0; i < cards.length; i++) {
+      // for (let i = 0; i < cards.length; i++) {
                 
-      }
+      // }
       
     });
   }
