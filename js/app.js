@@ -3,15 +3,23 @@
 ---------------------------------------*/
 const gallery = document.getElementById('gallery');
 const body = document.querySelector('body');
+const searchContainer = document.querySelector('.search-container');
 
 
 /*---------------------------------------
                 Fetch data
 ---------------------------------------*/
-fetch('https://randomuser.me/api/?results=12')
+
+function fetchData(ulr) {
+  return fetch(ulr)
+  .then(checkStatus)
   .then((response) => {
     return response.json();
   })
+  .catch(error => console.log('Ups something went wrong ' + error));
+}
+
+fetchData('https://randomuser.me/api/?results=12&nat=us')
   .then((data) => {
     const results = data.results;
     userArray = [...results];
@@ -19,8 +27,20 @@ fetch('https://randomuser.me/api/?results=12')
     generateHTML(userArray);
     displayModalWindow(userArray);
     addEventListenre();
+    searchBar();
+    SearchBarEventListener ();
   })
 
+  /*---------------------------------------
+      Check if response status is OK
+  ---------------------------------------*/
+function checkStatus(response) {
+  if (response.ok) {
+    return Promise.resolve(response);
+  } else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
 
   /*---------------------------------------
       Add EVENT Listener for Modal
@@ -29,30 +49,67 @@ fetch('https://randomuser.me/api/?results=12')
     // DOM
     const cards = document.querySelectorAll('div.card');
     const modal = document.querySelectorAll('div.modal-container');
+    const btnPrev = document.querySelectorAll('.modal-prev');
+    const btnNext = document.querySelectorAll('.modal-next');
 
-    // Loop thew cards
+    // Open modal when card is clicked
     for (var i = 0; i < cards.length; i++) {
       cards[i].addEventListener('click', (e) => {
-        const index = Array.prototype.indexOf.call(cards, e.target);
-        console.log(index);
-
+        let index = Array.prototype.indexOf.call(cards, e.currentTarget);
         modal[index].style.display = '';
-
-        const modalBtn = document.querySelectorAll('modal-container');
-        for (var j = 0; j < modal.length; j++) {
-          modal[j].addEventListener('click', (e) => {
-            if (e.target.className === 'modal-close-btn') {
-              modal[index].style.display = 'none';
-            }
-          })
-        }
       })
     }
 
 
+    // Prev button to show previous modal
+    for (let i = 0; i < modal.length; i++) {
+      btnPrev[i].addEventListener('click', (e) => {
+        const modalIndexPrev = Array.prototype.indexOf.call(btnPrev, e.currentTarget);
 
+        if (modalIndexPrev >= 1) {
+          modal[modalIndexPrev].style.display = 'none';
+          modal[modalIndexPrev - 1].style.display = ''; 
+        } else {
+          modal[modalIndexPrev].style.display = 'none';
+        }
+      })
+
+      // Next button, to show next modal 
+      btnNext[i].addEventListener('click', (e) => {
+        const modalIndexNext = Array.prototype.indexOf.call(btnNext, e.currentTarget);
+
+        if (modalIndexNext <= 10) {
+          modal[modalIndexNext].style.display = 'none';
+          modal[modalIndexNext + 1].style.display = ''; 
+        } else {
+          modal[modalIndexNext].style.display = 'none';
+        }
+      })
+    }
+
+    // Close modal when close button is clicked
+    for (var j = 0; j < modal.length; j++) {
+      modal[j].addEventListener('click', (e) => {
+        if (e.target.className === 'modal-close-btn') {
+          let indexofClose = Array.prototype.indexOf.call(modal, e.currentTarget);
+          console.log(indexofClose);
+
+          modal[indexofClose].style.display = 'none';
+        }  
+      })
+    }
 
   }
+
+
+  /*---------------------------------------
+                Birthday Date
+  ---------------------------------------*/
+  function regEx(date) {
+    let expression = /(\d+)(-)(\d+)(-)(\d+)/;
+    let newString = date.replace(expression, "$3" + "/" + "$5" + "/" + "$1");
+    return newString.substr(0, 10);
+}
 
   /*---------------------------------------
                 GenerateHTML
@@ -122,6 +179,7 @@ function displayModalWindow(data) {
     modal.appendChild(modalInfoCotainer)
 
     const modalImage = document.createElement('img');
+    modalImage.setAttribute("class", "modal-img");
     modalImage.src = data.picture.medium;;
     modalInfoCotainer.appendChild(modalImage);
 
@@ -155,8 +213,82 @@ function displayModalWindow(data) {
 
     const modalBirthday = document.createElement('p');
     modalBirthday.classList.add('modal-text');
-    modalBirthday.textContent = 'Birthday ' + data.dob.date;
+    modalBirthday.textContent = 'Birthday ' + regEx(data.dob.date);
     modalInfoCotainer.appendChild(modalBirthday);
+
+    // Modal Prev, Modal Next
+
+    const modalBtnContainer = document.createElement('div');
+    modalContainer.appendChild(modalBtnContainer);
+    
+    const modalPrev = document.createElement('button');
+    modalPrev.textContent = 'Prev';
+    modalPrev.classList.add('modal-prev');
+    modalPrev.classList.add('btn');
+    modalBtnContainer.appendChild(modalPrev);
+
+    const modalNext = document.createElement('button');
+    modalNext.textContent = 'Next';
+    modalNext.classList.add('modal-next');
+    modalNext.classList.add('btn');
+    modalBtnContainer.appendChild(modalNext);
+
   })
 
 }
+
+    /*---------------------------------------
+                Search bar
+  ---------------------------------------*/
+
+  function searchBar() {
+
+    // const form = document.createElement('form');
+    // searchContainer.appendChild(form);
+    // const input = document.createElement('input');
+    // input.type = 'search';
+    // input.classList.add('search-input');
+    // input.setAttribute("id", "search-submit");
+    // input.placeholder = 'Search...';
+    // form.appendChild(input);
+    // const button = document.createElement('input');
+    // button.type = 'submit';
+    // button.innerHTML = '&#x1F50D;';
+    // button.classList.add('search-submit');
+    // button.setAttribute("id", "search-button");
+    // form.appendChild(button);
+
+    const searchHTML = document.createElement('div');
+
+    searchHTML.innerHTML = `
+    <form action="#" method="get">
+      <input type="search" id="search-input" class="search-input" placeholder="Search...">
+      <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>`;
+    searchContainer.appendChild(searchHTML);
+  
+  }
+  
+     /*---------------------------------------
+                Search function
+  ---------------------------------------*/
+
+  function SearchBarEventListener () {
+    const button = document.getElementById('search-submit');
+    const searchInput = document.querySelector('#search-input');
+    const searchInputText = searchInput.value;
+    const cards = document.querySelectorAll('div.card');
+
+    const h3 = document.querySelectorAll('h3');
+  
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+  
+      console.log(searchInputText);
+
+      for (let i = 0; i < cards.length; i++) {
+                
+      }
+      
+    });
+  }
