@@ -243,7 +243,6 @@ function displayModalWindow(data) {
     const button = document.getElementById('search-submit');
     button.addEventListener('click', (e) => {
       searchFilter(e);
-      // displayMessage();
     });
   }
 
