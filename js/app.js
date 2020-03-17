@@ -19,7 +19,8 @@ function fetchData(ulr) {
   .catch(error => console.log('Ups something went wrong ' + error));
 }
 
-fetchData('https://randomuser.me/api/?results=12&nat=us')
+// https://randomuser.me/api/?results=12&nat=us
+fetchData('https://fsjs-public-api-backup.herokuapp.com/api')
   .then((data) => {
     const results = data.results;
     userArray = [...results];
@@ -100,16 +101,6 @@ function checkStatus(response) {
 
   }
 
-
-  /*---------------------------------------
-                Birthday Date
-  ---------------------------------------*/
-  function regEx(date) {
-    let expression = /(\d+)(-)(\d+)(-)(\d+)/;
-    let newString = date.replace(expression, "$3" + "/" + "$5" + "/" + "$1");
-    return newString.substr(0, 10);
-}
-
   /*---------------------------------------
                 GenerateHTML
   ---------------------------------------*/
@@ -160,7 +151,7 @@ function displayModalWindow(data) {
           <hr>
           <p class="modal-text">${data.cell}</p>
           <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.country}, OR ${data.location.postcode}</p>
-          <p class="modal-text">Birthday: ${regEx(data.dob.date)}</p>
+          <p class="modal-text">Birthday: ${data.dob.date.slice(0,8)}</p>
       </div>
     `;
     modalContainer.appendChild(modal);
@@ -206,32 +197,41 @@ function displayModalWindow(data) {
   
     // No results FOund
     const noResultsHTML = document.createElement('div');
-      noResultsHTML.classList.add('no-results');
-      noResultsHTML.innerHTML = 
-      `
-      <div class="res">
-        <h1> No Reults found of </h1>
-      </div>
-      `;
-      body.insertBefore(noResultsHTML, gallery);
-      noResultsHTML.style.display = 'none';
+    noResultsHTML.classList.add('no-results');
+    noResultsHTML.innerHTML = 
+    `
+    <div class="res">
+      <h1> No Reults found of </h1>
+    </div>
+    `;
+    body.insertBefore(noResultsHTML, gallery);
+    noResultsHTML.style.display = 'none';
 
     // Add Event Listener For search
       e.preventDefault();
       const searchInputText = searchInput.value.toUpperCase();
+      let noFoundMessage = false;
 
+      // SeachFilter from ---> https://www.w3schools.com/howto/howto_js_filter_lists.asp
       for(let i =0; i < cards.length; i++){ 
         let h3 = cards[i].getElementsByTagName('h3')[0];
         let  txtValue = h3.textContent;
         if (txtValue.toUpperCase().indexOf(searchInputText) > -1){
           cards[i].style.display = '';
-          noResultsHTML.style.display = 'none';
+          lnoFoundMessage = false;
         } else {
           cards[i].style.display = 'none'; 
-          noResultsHTML.style.display = '';
+          noFoundMessage = true;
         }
       }
+
+      if (noFoundMessage) {
+        noResultsHTML.style.display = '';
+      } else {
+        noResultsHTML.style.display = 'none';
+      }
   }
+
 
   
 
@@ -243,6 +243,7 @@ function displayModalWindow(data) {
     const button = document.getElementById('search-submit');
     button.addEventListener('click', (e) => {
       searchFilter(e);
+      // displayMessage();
     });
   }
 
