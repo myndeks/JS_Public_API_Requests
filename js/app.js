@@ -151,7 +151,7 @@ function displayModalWindow(data) {
           <hr>
           <p class="modal-text">${data.cell}</p>
           <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.country}, OR ${data.location.postcode}</p>
-          <p class="modal-text">Birthday: ${data.dob.date.slice(0,8)}</p>
+          <p class="modal-text">Birthday: ${data.dob.date.slice(0,10)}</p>
       </div>
     `;
     modalContainer.appendChild(modal);
